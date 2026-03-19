@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		80A4157B2F6A2DF900AD6CFA /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 80A4157A2F6A2DF900AD6CFA /* AWSS3 */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		80D9244A2F69A7E100D79B07 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80A4157B2F6A2DF900AD6CFA /* AWSS3 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = JPBT;
 			packageProductDependencies = (
+				80A4157A2F6A2DF900AD6CFA /* AWSS3 */,
 			);
 			productName = JPBT;
 			productReference = 80D9243A2F69A7DF00D79B07 /* JPBT.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 80D924312F69A7DF00D79B07;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 80D9243B2F69A7DF00D79B07 /* Products */;
 			projectDirPath = "";
@@ -396,6 +405,7 @@
 				DEVELOPMENT_TEAM = 2RLCGXAKX3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
@@ -454,6 +464,7 @@
 				DEVELOPMENT_TEAM = 2RLCGXAKX3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
@@ -643,6 +654,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.76;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		80A4157A2F6A2DF900AD6CFA /* AWSS3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSS3;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 80D924322F69A7DF00D79B07 /* Project object */;
 }

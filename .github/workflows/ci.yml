@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-and-test:
+    # Update to a runner image that ships Xcode 26 when available.
+    # See: https://github.com/actions/runner-images
+    runs-on: macos-26
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install LocalStack
+        run: pip install localstack awscli-local
+
+      - name: Start LocalStack
+        run: |
+          localstack start -d
+          localstack wait -t 30
+
+      - name: Build
+        run: |
+          xcodebuild -project JPBT.xcodeproj -scheme JPBT \
+            -destination 'platform=macOS' \
+            build
+
+      - name: Test
+        env:
+          AWS_ENDPOINT_URL: http://localhost:4566
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_REGION: us-east-1
+        run: |
+          xcodebuild -project JPBT.xcodeproj -scheme JPBT \
+            -destination 'platform=macOS' \
+            test
+
+      - name: Stop LocalStack
+        if: always()
+        run: localstack stop
