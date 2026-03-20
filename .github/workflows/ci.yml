@@ -23,10 +23,7 @@ jobs:
           localstack wait -t 30
 
       - name: Build
-        run: |
-          xcodebuild -project JPBT.xcodeproj -scheme JPBT \
-            -destination 'platform=macOS' \
-            build
+        run: make build
 
       - name: Test
         env:
@@ -34,10 +31,7 @@ jobs:
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_REGION: us-east-1
-        run: |
-          xcodebuild -project JPBT.xcodeproj -scheme JPBT \
-            -destination 'platform=macOS' \
-            test
+        run: make test
 
       - name: Stop LocalStack
         if: always()
