@@ -12,8 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install LocalStack
-        run: brew install localstack/tap/localstack-cli
+      - name: Install RustFS
+        run: |
+          brew tap rustfs/homebrew-tap
+          brew install rustfs
+          rustfs --version
 
       - name: Start LocalStack
         run: |
@@ -30,7 +33,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: test
           AWS_REGION: us-east-1
         run: make test
-
-      - name: Stop LocalStack
-        if: always()
-        run: localstack stop
