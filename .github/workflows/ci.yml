@@ -33,7 +33,7 @@ jobs:
           until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
 
       - name: Build
-        run: make build
+        run: make build EXTRA="CODE_SIGNING_ALLOWED=NO"
 
       - name: Test
         env:
