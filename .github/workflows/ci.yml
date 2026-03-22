@@ -18,10 +18,19 @@ jobs:
           brew install rustfs
           rustfs --version
 
-      - name: Start LocalStack
+      - name: Start RustFS
+        if: false
         run: |
-          localstack start -d
-          localstack wait -t 30
+          mkdir -p /tmp/rustfs-data
+          RUSTFS_ACCESS_KEY=minioadmin \
+          RUSTFS_SECRET_KEY=minioadmin \
+          RUSTFS_VOLUMES=/tmp/rustfs-data \
+          RUSTFS_ADDRESS=:9000 \
+          RUSTFS_CONSOLE_ENABLE=false \
+          RUST_LOG=error \
+          rustfs /tmp/rustfs-data &
+          # Wait for it to be ready
+          until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
 
       - name: Build
         run: make build
