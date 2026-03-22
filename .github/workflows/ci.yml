@@ -7,9 +7,19 @@ on:
 
 jobs:
   build-and-test:
-    # Update to a runner image that ships Xcode 26 when available.
-    # See: https://github.com/actions/runner-images
     runs-on: macos-26
+    services:
+      localstack:
+        image: localstack/localstack
+        env:
+          SERVICES: s3
+        ports:
+          - 4566:4566
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://localhost:4566
 
     steps:
       - uses: actions/checkout@v4
