@@ -92,7 +92,7 @@ struct ContentView: View {
             case .limited, .authorized:
                 let fetchOptions = PHFetchOptions()
                 fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-//                fetchOptions.fetchLimit = 10
+                fetchOptions.fetchLimit = 100
                 let assets = PHAsset.fetchAssets(with: .image, options: fetchOptions)
 //                var infos: [PhotoAssetInfo] = []
                 for index in 0..<assets.count {
