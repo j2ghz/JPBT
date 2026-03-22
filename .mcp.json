@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "XcodeBuildMCP": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": [
+        "dlx",
+        "xcodebuildmcp@latest",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
