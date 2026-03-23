@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		803577EB2F70B4D900AC09C2 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 803577EA2F70B4D900AC09C2 /* Dependencies */; };
+		803577EE2F70B5DD00AC09C2 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 803577ED2F70B5DD00AC09C2 /* ComposableArchitecture */; };
 		80A4157B2F6A2DF900AD6CFA /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = 80A4157A2F6A2DF900AD6CFA /* AWSS3 */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +59,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				80A4157B2F6A2DF900AD6CFA /* AWSS3 in Frameworks */,
+				803577EB2F70B4D900AC09C2 /* Dependencies in Frameworks */,
+				803577EE2F70B5DD00AC09C2 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +122,8 @@
 			name = JPBT;
 			packageProductDependencies = (
 				80A4157A2F6A2DF900AD6CFA /* AWSS3 */,
+				803577EA2F70B4D900AC09C2 /* Dependencies */,
+				803577ED2F70B5DD00AC09C2 /* ComposableArchitecture */,
 			);
 			productName = JPBT;
 			productReference = 80D9243A2F69A7DF00D79B07 /* JPBT.app */;
@@ -203,6 +209,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+				803577E92F70B4D900AC09C2 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				803577EC2F70B5DD00AC09C2 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 80D9243B2F69A7DF00D79B07 /* Products */;
@@ -658,6 +666,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		803577E92F70B4D900AC09C2 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.11.0;
+			};
+		};
+		803577EC2F70B5DD00AC09C2 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.25.2;
+			};
+		};
 		80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
@@ -669,6 +693,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		803577EA2F70B4D900AC09C2 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 803577E92F70B4D900AC09C2 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		803577ED2F70B5DD00AC09C2 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 803577EC2F70B5DD00AC09C2 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		80A4157A2F6A2DF900AD6CFA /* AWSS3 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 80A415792F6A2DF900AD6CFA /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
