@@ -4,8 +4,3 @@ updates:
     schedule:
       interval: weekly
     directory: /
-
-  - package-ecosystem: swift
-    schedule:
-      interval: weekly
-    directory: /
