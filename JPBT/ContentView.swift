@@ -1,120 +1,80 @@
-//
-//  ContentView.swift
-//  JPBT
-//
-//  Created by Jozef Hollý on 17/03/2026.
-//
-
-import SwiftUI
-import SwiftData
 import Photos
-import PhotosUI
+import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-//    @Query private var items: [Item]
-    @State private var photoAssets: [PHAsset] = []
+  @State private var photoAssets: [PHAsset] = []
+  @State private var selectedAssetID: String?
+  @State private var showInspector = true
 
-    var body: some View {
-        NavigationSplitView {
-            List {
-//                if !photoAssets.isEmpty {
-                    ForEach(photoAssets, id: \.localIdentifier) { asset in
-                        NavigationLink {
-                            if asset.mediaType == .image {
-                                AssetImageView(asset: asset)
-                            } else if asset.mediaType == .video {
-                                AssetVideoView(asset: asset)
-                            } else {
-                                Text("Unsupported asset type")
-                            }
-                        } label: {
-                            if let date = asset.creationDate {
-                                Text(date, format: Date.FormatStyle(date: .numeric, time: .standard))
-                            } else {
-                                Text(asset.localIdentifier)
-                            }
-                        }
-                    }
-//                } else {
-//                    ForEach(items) { item in
-//                        NavigationLink {
-//                            Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-//                        } label: {
-//                            Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-//                        }
-//                    }
-//                    .onDelete(perform: deleteItems)
-//                }
-            }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-        .task {
-            requestPhotoAuthorization()
-        }
-    }
+  private var selectedAsset: PHAsset? {
+    photoAssets.first { $0.localIdentifier == selectedAssetID }
+  }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
+  var body: some View {
+    NavigationSplitView {
+      List(photoAssets, id: \.localIdentifier, selection: $selectedAssetID) { asset in
+        Label {
+          if let date = asset.creationDate {
+            Text(date, format: Date.FormatStyle(date: .numeric, time: .standard))
+          } else {
+            Text(asset.localIdentifier)
+          }
+        } icon: {
+          Image(systemName: asset.mediaType == .video ? "video" : "photo")
         }
+      }
+      .navigationSplitViewColumnWidth(min: 180, ideal: 200)
+      .toolbar {
+        ToolbarItem {
+          Button {
+            showInspector.toggle()
+          } label: {
+            Label("Toggle Inspector", systemImage: "sidebar.trailing")
+          }
+        }
+      }
+    } detail: {
+      if let asset = selectedAsset {
+        Group {
+          if asset.mediaType == .image {
+            AssetImageView(asset: asset)
+          } else if asset.mediaType == .video {
+            AssetVideoView(asset: asset)
+          } else {
+            Text("Unsupported asset type")
+          }
+        }
+        .id(asset.localIdentifier)
+        .inspector(isPresented: $showInspector) {
+          AssetInfoView(asset: asset)
+            .inspectorColumnWidth(min: 260, ideal: 300, max: 400)
+        }
+      } else {
+        Text("Select an item")
+      }
     }
+    .task {
+      await loadAssets()
+    }
+  }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-//            for index in offsets {
-////                modelContext.delete(items[index])
-//            }
-        }
-    }
+  private func loadAssets() async {
+    let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+    guard status == .authorized || status == .limited else { return }
 
-    private func requestPhotoAuthorization() {
-        PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-            print("Status \(status)")
-            switch status {
-            case .limited, .authorized:
-                let fetchOptions = PHFetchOptions()
-                fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-                fetchOptions.fetchLimit = 100
-                let assets = PHAsset.fetchAssets(with: .image, options: fetchOptions)
-//                var infos: [PhotoAssetInfo] = []
-                for index in 0..<assets.count {
-                    let asset = assets.object(at: index)
-//                    infos.append(PhotoAssetInfo(id: asset.localIdentifier, creationDate: asset.creationDate, mediaType: asset.mediaType))
-                    
-                    DispatchQueue.main.async {
-                    
-                        self.photoAssets.append(asset)
-                    }
-                }
-            case .notDetermined, .denied, .restricted:
-                return
-            @unknown default:
-                return
-            }
-        }
+    let fetchOptions = PHFetchOptions()
+    fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+    fetchOptions.fetchLimit = 100
+    let results = PHAsset.fetchAssets(with: fetchOptions)
+
+    var assets: [PHAsset] = []
+    results.enumerateObjects { asset, _, _ in
+      assets.append(asset)
     }
+    photoAssets = assets
+  }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+  ContentView()
 }
-
