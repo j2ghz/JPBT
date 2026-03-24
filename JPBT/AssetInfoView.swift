@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AssetInfoView: View {
   let asset: PHAsset
+  var cursorPixelInfo: PixelInfo?
 
   @State private var peakBrightness: Double?
   @State private var isAnalyzing = false
@@ -73,6 +74,17 @@ struct AssetInfoView: View {
             LabeledContent("Peak Brightness") {
               ProgressView()
                 .controlSize(.small)
+            }
+          }
+          if let info = cursorPixelInfo {
+            Divider()
+            LabeledContent("Cursor RGB") {
+              Text(String(format: "%.3f, %.3f, %.3f", info.r, info.g, info.b))
+                .monospacedDigit()
+            }
+            LabeledContent("Cursor Luminance") {
+              Text(String(format: "%.3f", info.luminance))
+                .monospacedDigit()
             }
           }
         }
@@ -175,11 +187,21 @@ struct AssetInfoView: View {
   }
 
   private nonisolated static func analyzePeakBrightness(imageData: Data) -> Double? {
-    guard let ciImage = CIImage(data: imageData, options: [.applyOrientationProperty: true])
+    guard
+      let ciImage = CIImage(
+        data: imageData,
+        options: [
+          .applyOrientationProperty: true,
+          .expandToHDR: true,
+        ]
+      )
     else { return nil }
 
     let linearSpace = CGColorSpace(name: CGColorSpace.extendedLinearSRGB)!
-    let context = CIContext(options: [.workingColorSpace: linearSpace])
+    let context = CIContext(options: [
+      .workingColorSpace: linearSpace,
+      .workingFormat: NSNumber(value: CIFormat.RGBAh.rawValue),
+    ])
 
     let width = Int(ciImage.extent.width)
     let height = Int(ciImage.extent.height)
@@ -199,13 +221,17 @@ struct AssetInfoView: View {
 
     let pixelCount = width * height
 
+    // Unpremultiply and extract channels
     var rChannel = [Float](repeating: 0, count: pixelCount)
     var gChannel = [Float](repeating: 0, count: pixelCount)
     var bChannel = [Float](repeating: 0, count: pixelCount)
     for i in 0..<pixelCount {
-      rChannel[i] = buffer[i * 4]
-      gChannel[i] = buffer[i * 4 + 1]
-      bChannel[i] = buffer[i * 4 + 2]
+      let a = buffer[i * 4 + 3]
+      if a > 0 {
+        rChannel[i] = buffer[i * 4] / a
+        gChannel[i] = buffer[i * 4 + 1] / a
+        bChannel[i] = buffer[i * 4 + 2] / a
+      }
     }
 
     // Rec. 709: Y = 0.2126 R + 0.7152 G + 0.0722 B

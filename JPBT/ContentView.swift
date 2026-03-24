@@ -1,11 +1,19 @@
 import Photos
 import SwiftUI
 
+struct PixelInfo: Equatable {
+  var r: Float
+  var g: Float
+  var b: Float
+  var luminance: Float
+}
+
 struct ContentView: View {
   @State private var photoAssets: [PHAsset] = []
   @State private var selectedAssetID: String?
   @State private var showInspector = true
   @State private var showFalseColor = false
+  @State private var cursorPixelInfo: PixelInfo?
 
   private var selectedAsset: PHAsset? {
     photoAssets.first { $0.localIdentifier == selectedAssetID }
@@ -46,7 +54,11 @@ struct ContentView: View {
       if let asset = selectedAsset {
         Group {
           if asset.mediaType == .image {
-            AssetImageView(asset: asset, showFalseColor: $showFalseColor)
+            AssetImageView(
+              asset: asset,
+              showFalseColor: $showFalseColor,
+              cursorPixelInfo: $cursorPixelInfo
+            )
           } else if asset.mediaType == .video {
             AssetVideoView(asset: asset)
           } else {
@@ -55,7 +67,7 @@ struct ContentView: View {
         }
         .id(asset.localIdentifier)
         .inspector(isPresented: $showInspector) {
-          AssetInfoView(asset: asset)
+          AssetInfoView(asset: asset, cursorPixelInfo: cursorPixelInfo)
             .inspectorColumnWidth(min: 260, ideal: 300, max: 400)
         }
       } else {
