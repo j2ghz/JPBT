@@ -8,7 +8,8 @@ on:
 jobs:
   build-and-test:
     runs-on: macos-26
-
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
@@ -46,9 +47,13 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad
+        with:
+          use_oidc: true
+          report_type: coverage
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad
         with:
+          use_oidc: true
           report_type: test_results
