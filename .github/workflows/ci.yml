@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Install RustFS
+        if: false
         run: |
           brew tap rustfs/homebrew-tap
           brew install rustfs
@@ -41,4 +42,11 @@ jobs:
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_REGION: us-east-1
-        run: make test EXTRA="CODE_SIGNING_ALLOWED=NO"
+        run: make test EXTRA="CODE_SIGNING_ALLOWED=NO -enableCodeCoverage"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3
