@@ -5,6 +5,7 @@ struct ContentView: View {
   @State private var photoAssets: [PHAsset] = []
   @State private var selectedAssetID: String?
   @State private var showInspector = true
+  @State private var showFalseColor = false
 
   private var selectedAsset: PHAsset? {
     photoAssets.first { $0.localIdentifier == selectedAssetID }
@@ -26,6 +27,14 @@ struct ContentView: View {
       .navigationSplitViewColumnWidth(min: 180, ideal: 200)
       .toolbar {
         ToolbarItem {
+          Toggle(isOn: $showFalseColor) {
+            Label("False Color", systemImage: "camera.filters")
+          }
+          .toggleStyle(.button)
+          .help("Toggle false color HDR visualization")
+          .disabled(selectedAsset?.mediaType != .image)
+        }
+        ToolbarItem {
           Button {
             showInspector.toggle()
           } label: {
@@ -37,7 +46,7 @@ struct ContentView: View {
       if let asset = selectedAsset {
         Group {
           if asset.mediaType == .image {
-            AssetImageView(asset: asset)
+            AssetImageView(asset: asset, showFalseColor: $showFalseColor)
           } else if asset.mediaType == .video {
             AssetVideoView(asset: asset)
           } else {
