@@ -67,26 +67,7 @@ enum FalseColorFilter {
         ub = 0
       }
 
-      let lum = 0.2126 * ur + 0.7152 * ug + 0.0722 * ub
-      let stops = lum > 0 ? log2(lum) : -Float.infinity
-
-      let outR: Float
-      let outG: Float
-      let outB: Float
-      if lum <= 1.0 {
-        let v = max(lum, 0)
-        outR = v
-        outG = v
-        outB = v
-      } else if stops <= 1 {
-        outR = 0.66; outG = 1; outB = 1
-      } else if stops <= 2 {
-        outR = 0.4; outG = 0.6; outB = 1
-      } else if stops <= 3 {
-        outR = 0.5; outG = 0.1; outB = 1
-      } else {
-        outR = 0.8; outG = 0.2; outB = 1
-      }
+      let (outR, outG, outB) = falseColor(r: ur, g: ug, b: ub)
 
       outputBytes[i * 4] = UInt8(outR * 255)
       outputBytes[i * 4 + 1] = UInt8(outG * 255)
@@ -118,4 +99,18 @@ enum FalseColorFilter {
     )
   }
 
+  /// Maps a linear sRGB pixel to a false color output.
+  /// SDR (luminance ≤ 1.0) becomes grayscale; HDR is banded by stops above SDR white.
+  static func falseColor(r: Float, g: Float, b: Float) -> (Float, Float, Float) {
+    let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    if lum <= 1.0 {
+      let v = max(lum, 0)
+      return (v, v, v)
+    }
+    let stops = log2(lum)
+    if stops <= 1 { return (0.66, 1, 1) }
+    if stops <= 2 { return (0.4, 0.6, 1) }
+    if stops <= 3 { return (0.5, 0.1, 1) }
+    return (0.8, 0.2, 1)
+  }
 }
