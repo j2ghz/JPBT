@@ -24,8 +24,7 @@ extension CompressionService: DependencyKey {
         }
       }
       guard ZSTD_isError(written) == 0 else { throw CompressionError.compressionFailed }
-      output.removeSubrange(written...)
-      return output
+      return Data(output.prefix(written))
     },
     decompress: { data in
       let originalSize = data.withUnsafeBytes { src in
